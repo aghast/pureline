@@ -15,7 +15,7 @@
 # option variables;
 #   PL_TMUX_WINDOW: true/false, append window name
 
-function tmux_session_segment {
+function tmux_segment {
     [[ ! -v TMUX ]] && return;  ## return if $TMUX not set
 	which tmux >/dev/null 2>&1 || return; ## return if no 'tmux'
 
