@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# hg segment
+
+# Set default symbols if not already defined in config
+# Defaults should be standard symbols.
+[[ -z ${PL_SYMBOLS[hg_branch]} ]] && PL_SYMBOLS[hg_branch]="╬"
+
+# -----------------------------------------------------------------------------
+# append to prompt: hgbranch with indicators for;
+#     number of; modified files, staged files and conflicts
+# arg: $1 background color
+# arg: $2 foreground color
+# option variables;
+#   PL_HG_UNTRACKED: true/false
+function hg_segment {
+    which hg >/dev/null 2>&1 || return;  ## return if no hg
+
+    local hg_branch="$(hg branch 2>/dev/null)"
+
+    [[ -z $hg_branch ]] && return; ## return early if not a branch/no info
+
+	local bg_color="$1"
+	local fg_color="$2"
+	local content="${PL_SYMBOLS[hg_branch]} $hg_branch"
+
+	if [[ $PL_HG_UNTRACKED == true ]]; then
+    	local number_untracked="$(hg status -u -T ".\n" | wc -l | tr -d '[:space:]')"
+    	if (( number_untracked != 0 )); then
+        	content+=" ${PL_SYMBOLS[soft_separator]} ${PL_SYMBOLS[hg_untracked]}$number_untracked"
+    	fi
+	fi
+
+	if [[ -n "$(hg status 2>/dev/null)" ]]; then
+    	if [[ -v PL_HG_DIRTY_FG ]]; then
+        	fg_color="$PL_HG_DIRTY_FG"
+    	fi
+    	if [[ -v PL_HG_DIRTY_BG ]]; then
+        	bg_color="$PL_HG_DIRTY_BG"
+    	fi
+	fi
+
+	PS1+="$(segment_end "$fg_color" "$bg_color")"
+	PS1+="$(segment_content "$fg_color" "$bg_color" " $content ")"
+	__last_color="$bg_color"
+}
+

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# tmux_segment
+#
+
+# Set default symbols if not already defined in config.
+# Defaults should be standard symbols.
+
+[[ -z ${PL_SYMBOLS[tmux_session]} ]] && PL_SYMBOLS[tmux_session]='♆'
+[[ -z ${PL_SYMBOLS[tmux_window]} ]] && PL_SYMBOLS[tmux_window]='▢'
+# -----------------------------------------------------------------------------
+# append to prompt: tmux session name
+# arg: $1 background color
+# arg: $2 foreground color
+# option variables;
+#   PL_TMUX_WINDOW: true/false, append window name
+
+function tmux_session_segment {
+    [[ ! -v TMUX ]] && return;  ## return if $TMUX not set
+	which tmux >/dev/null 2>&1 || return; ## return if no 'tmux'
+
+    local bg_color="$1"
+    local fg_color="$2"
+    local content="${PL_SYMBOLS[tmux_session]} #{session_name}"
+
+    if [[ $PL_TMUX_WINDOW ]]; then
+        content+=" ${PL_SYMBOLS[tmux_window]} #{window_name}"
+    fi
+
+    content="$(tmux display -p "$content")"
+
+    PS1+="$(segment_end "$fg_color" "$bg_color")"
+    PS1+="$(segment_content "$fg_color" "$bg_color" " $content ")"
+    __last_color="$bg_color"
+}
+
+
