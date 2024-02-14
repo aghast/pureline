@@ -4,7 +4,8 @@
 
 # Set default symbols if not already defined in config
 # Defaults should be standard symbols.
-[[ -z ${PL_SYMBOLS[hg_branch]} ]] && PL_SYMBOLS[hg_branch]="╬"
+[[ -z ${PL_SYMBOLS[hg_branch]:-} ]] && PL_SYMBOLS[hg_branch]="╬"
+[[ -z ${PL_SYMBOLS[hg_untracked]:-} ]] && PL_SYMBOLS[hg_untracked]="?"
 
 # -----------------------------------------------------------------------------
 # append to prompt: hgbranch with indicators for;
