@@ -4,7 +4,7 @@
 
 # Set default symbols if not already defined in config
 # Defaults should be standard symbols.
-[[ -z ${PL_SYMBOLS[ssh]} ]] && PL_SYMBOLS[ssh]='╤'
+[[ -z ${PL_SYMBOLS[ssh]:-} ]] && PL_SYMBOLS[ssh]='╤'
 
 # -----------------------------------------------------------------------------
 # append to prompt: indicate if SSH session
@@ -14,7 +14,7 @@
 #   PL_SSH_SHOW_HOST: true/false to show host name/ip
 #   PL_SSH_USE_IP: true/false to show IP instead of hostname
 function ssh_segment {
-    if [[ "${SSH_CLIENT}" || "${SSH_TTY}" ]]; then
+    if [[ "${SSH_CLIENT:-}" || "${SSH_TTY:-}" ]]; then
         local bg_color="$1"
         local fg_color="$2"
         local content="${PL_SYMBOLS[ssh]}"

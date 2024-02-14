@@ -6,14 +6,15 @@
 # Set default symbols if not already defined in config.
 # Defaults should be standard symbols.
 
-[[ -z ${PL_SYMBOLS[tmux_session]} ]] && PL_SYMBOLS[tmux_session]='♆'
-[[ -z ${PL_SYMBOLS[tmux_window]} ]] && PL_SYMBOLS[tmux_window]='▢'
+[[ -z ${PL_SYMBOLS[tmux_session]:-} ]] && PL_SYMBOLS[tmux_session]='♆'
+[[ -z ${PL_SYMBOLS[tmux_window]:-} ]] && PL_SYMBOLS[tmux_window]='▢'
 # -----------------------------------------------------------------------------
 # append to prompt: tmux session name
 # arg: $1 background color
 # arg: $2 foreground color
 # option variables;
 #   PL_TMUX_WINDOW: true/false, append window name
+: "${PL_TMUX_WINDOW:=false}"
 
 function tmux_segment {
     [[ ! -v TMUX ]] && return;  ## return if $TMUX not set
@@ -23,7 +24,7 @@ function tmux_segment {
     local fg_color="$2"
     local content="${PL_SYMBOLS[tmux_session]} #{session_name}"
 
-    if [[ $PL_TMUX_WINDOW ]]; then
+    if [[ ${PL_TMUX_WINDOW:-} == true  ]]; then
         content+=" ${PL_SYMBOLS[tmux_window]} #{window_name}"
     fi
 
